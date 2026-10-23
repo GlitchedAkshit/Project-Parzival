@@ -1,0 +1,120 @@
+/* =========================================================================
+   Background environment: an understated holographic workspace.
+   Everything here is transform/opacity animated (GPU composited) and
+   kept extremely dim so the glass and the AI core stay the focus.
+   ========================================================================= */
+.env {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 42%, #071224 0%, #040912 45%, var(--bg) 78%);
+}
+
+.env__layer {
+  position: absolute;
+  inset: -6%;
+  will-change: transform;
+}
+
+/* Animated radial gradients behind the core */
+.env__aurora {
+  background:
+    radial-gradient(38% 34% at 50% 44%, rgba(var(--state-rgb), 0.13), transparent 70%),
+    radial-gradient(26% 30% at 38% 58%, rgba(var(--violet-rgb), 0.06), transparent 70%),
+    radial-gradient(30% 26% at 64% 34%, rgba(0, 140, 255, 0.07), transparent 70%);
+  animation: aurora-drift 26s var(--ease-in-out) infinite alternate;
+  transition: background 1.2s var(--ease-out);
+}
+
+@keyframes aurora-drift {
+  0%   { transform: translate3d(-1.5%, 0.5%, 0) scale(1) rotate(0deg); }
+  50%  { transform: translate3d(1%, -1%, 0) scale(1.06) rotate(3deg); }
+  100% { transform: translate3d(2%, 1.2%, 0) scale(0.98) rotate(-2deg); }
+}
+
+.env__stars {
+  width: 112%;
+  height: 112%;
+  opacity: 0.85;
+}
+
+/* Minimal technical grid, fading out away from the centre */
+.env__grid {
+  background-image:
+    linear-gradient(rgba(var(--ice-rgb), 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--ice-rgb), 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  background-position: center center;
+  -webkit-mask-image: radial-gradient(60% 55% at 50% 45%, #000 0%, rgba(0, 0, 0, 0.35) 55%, transparent 85%);
+          mask-image: radial-gradient(60% 55% at 50% 45%, #000 0%, rgba(0, 0, 0, 0.35) 55%, transparent 85%);
+}
+
+/* Faint cyan orbital paths */
+.env__orbits {
+  width: 112%;
+  height: 112%;
+  fill: none;
+  stroke: rgba(var(--cyan-rgb), 0.07);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.env__orbits .is-faint { stroke: rgba(var(--cyan-rgb), 0.04); stroke-dasharray: 2 10; }
+.env__orbit-spin {
+  transform-origin: 0 0;
+  animation: orbit-spin 220s linear infinite;
+}
+@keyframes orbit-spin { to { transform: rotate(360deg); } }
+
+/* Pointer-following ambient light - moved with transform, never repainted */
+.env__spot {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 900px;
+  height: 900px;
+  margin: -450px 0 0 -450px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(var(--cyan-rgb), 0.055), rgba(var(--cyan-rgb), 0.02) 45%, transparent 75%);
+  transform: translate3d(var(--spot-x, 50vw), var(--spot-y, 40vh), 0);
+  opacity: 0;
+  transition: opacity 1.2s var(--ease-out);
+  will-change: transform;
+}
+body.has-pointer .env__spot { opacity: 1; }
+
+/* Occasional holographic scan */
+.env__scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 140px;
+  background: linear-gradient(180deg, transparent, rgba(var(--cyan-rgb), 0.035) 70%, rgba(var(--cyan-rgb), 0.09) 98%, transparent);
+  transform: translate3d(0, -160px, 0);
+  animation: env-scan 16s var(--ease-in-out) 4s infinite;
+  will-change: transform;
+}
+@keyframes env-scan {
+  0%   { transform: translate3d(0, -160px, 0); opacity: 0; }
+  4%   { opacity: 1; }
+  22%  { transform: translate3d(0, 110vh, 0); opacity: 0.8; }
+  23%, 100% { transform: translate3d(0, 110vh, 0); opacity: 0; }
+}
+
+.env__vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(140% 110% at 50% 45%, transparent 55%, rgba(0, 0, 0, 0.55) 100%),
+    linear-gradient(180deg, rgba(3, 5, 8, 0.0) 70%, rgba(3, 5, 8, 0.6));
+}
+
+html[data-effects="reduced"] .env__scan,
+html[data-effects="reduced"] .env__spot { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .env__scan, .env__spot { display: none; }
+}

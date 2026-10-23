@@ -1,0 +1,273 @@
+/* =========================================================================
+   Command-centre layout
+     wide   (>= 1360): conversation | core | context
+     medium (1024-1359): conversation | core      (context -> "Activity" in the dock)
+     narrow (< 1024): single scrolling column, dock pinned to the bottom
+   ========================================================================= */
+.app {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  height: 100dvh;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 14px 18px 14px;
+}
+
+.main {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(330px, 400px) minmax(0, 1fr) minmax(290px, 344px);
+  grid-template-rows: minmax(0, 1fr);
+  gap: 18px;
+  min-height: 0;
+}
+
+.main > .conversation { grid-column: 1; grid-row: 1; }
+.main > .stage        { grid-column: 2; grid-row: 1; }
+.main > .context      { grid-column: 3; grid-row: 1; }
+.main > .sheet        { grid-column: 2 / 4; grid-row: 1; }
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: 18px 18px 12px 22px;
+}
+
+.panel__title {
+  font: 600 var(--fs-lg)/1.2 var(--font-display);
+  letter-spacing: 0.01em;
+  color: var(--text);
+}
+
+.panel__subtitle {
+  margin-top: 2px;
+  font-size: var(--fs-xs);
+  color: var(--text-3);
+  letter-spacing: 0.02em;
+}
+
+.panel__actions { display: flex; gap: 6px; }
+
+/* -------------------------------------------------------------------------
+   Status bar
+   ------------------------------------------------------------------------- */
+.statusbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--s-4);
+  height: 56px;
+  padding: 0 14px 0 16px;
+  user-select: none;
+}
+
+.statusbar__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.sigil {
+  position: relative;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(var(--state-rgb), 0.9) 0 18%, rgba(var(--state-rgb), 0.25) 30%, transparent 58%);
+  box-shadow: 0 0 18px rgba(var(--state-rgb), 0.35);
+  transition: box-shadow var(--dur-4) var(--ease-out);
+}
+.sigil::before,
+.sigil::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1px solid rgba(var(--state-rgb), 0.5);
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  animation: sigil-spin 6s linear infinite;
+}
+.sigil::after {
+  inset: 5px;
+  border-color: rgba(var(--state-rgb), 0.35);
+  border-right-color: transparent;
+  border-top-color: transparent;
+  animation-duration: 4s;
+  animation-direction: reverse;
+}
+@keyframes sigil-spin { to { transform: rotate(360deg); } }
+
+.statusbar__ident { display: flex; flex-direction: column; min-width: 0; }
+
+.statusbar__name {
+  font: 600 13px/1.1 var(--font-hud);
+  letter-spacing: 0.42em;
+  color: var(--ice);
+}
+
+.statusbar__state {
+  margin-top: 3px;
+  font: 500 10px/1 var(--font-hud);
+  letter-spacing: 0.22em;
+  color: rgb(var(--state-rgb));
+  white-space: nowrap;
+  transition: color var(--dur-3) var(--ease-out);
+}
+
+.statusbar__clock {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  color: var(--text-2);
+}
+
+.clock__time {
+  font: 500 17px/1 var(--font-hud);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.12em;
+  color: var(--ice);
+}
+
+.clock__date {
+  font: 500 10.5px/1 var(--font-hud);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.statusbar__meters {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* -------------------------------------------------------------------------
+   Stage: the AI core + voice controls
+   ------------------------------------------------------------------------- */
+.stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+  min-width: 0;
+  container-type: size;
+  container-name: stage;
+}
+
+/* -------------------------------------------------------------------------
+   Dock row
+   ------------------------------------------------------------------------- */
+.dock {
+  justify-self: center;
+}
+
+/* -------------------------------------------------------------------------
+   Workspace mode: a sheet opens, the context rail steps back, and the core
+   morphs into a compact orb at the left of the stage (JS sets --core-*).
+   ------------------------------------------------------------------------- */
+.context {
+  transition:
+    opacity var(--dur-3) var(--ease-out),
+    transform var(--dur-spring) var(--ease-spring),
+    visibility 0s linear 0s;
+}
+
+.app[data-mode="workspace"] .context {
+  opacity: 0;
+  transform: translate3d(28px, 0, 0) scale(0.97);
+  visibility: hidden;
+  pointer-events: none;
+  transition:
+    opacity var(--dur-2) var(--ease-out),
+    transform var(--dur-spring) var(--ease-spring),
+    visibility 0s linear var(--dur-2);
+}
+
+/* -------------------------------------------------------------------------
+   Medium: two columns, context lives in the dock's Activity sheet
+   ------------------------------------------------------------------------- */
+@media (max-width: 1359px) {
+  .main { grid-template-columns: minmax(310px, 370px) minmax(0, 1fr); }
+  .main > .context { display: none; }
+  .main > .sheet { grid-column: 2; }
+}
+
+/* -------------------------------------------------------------------------
+   Narrow: one scrolling column
+   ------------------------------------------------------------------------- */
+@media (max-width: 1023px) {
+  body { overflow: auto; }
+  .app {
+    height: auto;
+    min-height: 100dvh;
+    grid-template-rows: auto auto;
+    padding: 10px 12px calc(var(--dock-h) + 28px);
+    gap: 12px;
+  }
+  .main {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .main > .stage {
+    order: 1;
+    height: min(78vh, 640px);
+    min-height: 420px;
+  }
+  .main > .conversation {
+    order: 2;
+    height: min(70vh, 640px);
+  }
+  .main > .sheet {
+    position: fixed;
+    inset: 10px 10px calc(var(--dock-h) + 22px);
+    z-index: 30;
+  }
+  .dock {
+    position: fixed;
+    left: 50%;
+    bottom: 12px;
+    z-index: 40;
+    translate: -50% 0;
+    max-width: calc(100vw - 20px);
+  }
+  .statusbar { grid-template-columns: auto 1fr auto; height: 52px; }
+  .statusbar__clock { justify-content: center; }
+}
+
+@media (max-width: 1023px) {
+  /* A full-screen sheet owns the scroll */
+  body:has(.app[data-mode="workspace"]) { overflow: hidden; }
+}
+
+@media (max-width: 640px) {
+  .statusbar { padding: 0 10px; gap: 8px; }
+  .statusbar__clock .clock__date { display: none; }
+  .statusbar__name { display: none; }
+  .statusbar__state { margin-top: 0; font-size: 9.5px; letter-spacing: 0.16em; }
+  .clock__time { font-size: 15px; letter-spacing: 0.06em; }
+  .main > .stage { height: min(72vh, 560px); min-height: 380px; }
+}
+
+@media (max-width: 420px) {
+  .statusbar__state { display: none; }
+}

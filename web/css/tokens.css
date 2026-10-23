@@ -1,0 +1,103 @@
+/* =========================================================================
+   Design tokens - Parzival "Glass Flow"
+   Pitch black, deep navy, electric cyan, ice blue, rare violet accents.
+   ========================================================================= */
+:root {
+  /* Surfaces */
+  --bg: #030508;
+  --navy-950: #04070d;
+  --navy-900: #070d18;
+  --navy-800: #0b1526;
+  --navy-700: #112038;
+
+  /* Light */
+  --cyan: #3fe0ff;
+  --cyan-rgb: 63, 224, 255;
+  --cyan-deep: #00b8f0;
+  --ice: #cbf2ff;
+  --ice-rgb: 203, 242, 255;
+  --violet: #8f80ff;
+  --violet-rgb: 143, 128, 255;
+  --amber: #ffb547;
+  --amber-rgb: 255, 181, 71;
+  --red: #ff6b81;
+  --red-rgb: 255, 107, 129;
+  --green: #61f2c4;
+  --green-rgb: 97, 242, 196;
+
+  /* The assistant's current state colour - updated live from JS */
+  --state-rgb: var(--cyan-rgb);
+
+  /* Text */
+  --text: #e9f7ff;
+  --text-2: #a7c0d0;
+  --text-3: #6f8a9c;
+  --text-4: #4a6373;
+
+  /* Hairlines */
+  --line: rgba(170, 225, 255, 0.09);
+  --line-2: rgba(170, 225, 255, 0.15);
+  --line-3: rgba(170, 225, 255, 0.24);
+
+  /* Glass */
+  --glass-tint: rgba(12, 24, 42, 0.42);
+  --glass-tint-deep: rgba(8, 16, 30, 0.62);
+  --glass-blur: 22px;
+  --glass-blur-deep: 30px;
+  --glass-sat: 150%;
+  --glass-sheen: linear-gradient(158deg,
+      rgba(200, 240, 255, 0.085) 0%,
+      rgba(160, 215, 255, 0.03) 34%,
+      rgba(10, 20, 38, 0.0) 60%,
+      rgba(var(--cyan-rgb), 0.025) 100%);
+
+  /* Shape */
+  --r-xl: 28px;
+  --r-lg: 22px;
+  --r-md: 16px;
+  --r-sm: 12px;
+  --r-xs: 8px;
+  --r-pill: 999px;
+
+  /* Space */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-7: 32px;
+  --s-8: 40px;
+
+  /* Type */
+  --font-sans: "Inter", "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-display: "Space Grotesk", "Segoe UI Variable Display", "Segoe UI", system-ui, sans-serif;
+  --font-hud: "Bahnschrift", "Segoe UI Variable Small", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Cascadia Mono", "Consolas", ui-monospace, monospace;
+
+  --fs-xs: 11px;
+  --fs-sm: 12.5px;
+  --fs-md: 14px;
+  --fs-lg: 16px;
+  --fs-xl: 20px;
+  --fs-2xl: 26px;
+
+  /* Motion. --ease-spring is replaced at startup by a physically
+     simulated spring curve (CSS linear()) - see js/fx/spring.js */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.32, 0.5, 1);
+  --dur-spring: 620ms;
+  --dur-1: 140ms;
+  --dur-2: 260ms;
+  --dur-3: 480ms;
+  --dur-4: 760ms;
+
+  /* Depth */
+  --shadow-float: 0 30px 60px -28px rgba(0, 0, 0, 0.8), 0 10px 24px -12px rgba(0, 0, 0, 0.55);
+  --shadow-lift: 0 40px 80px -30px rgba(0, 0, 0, 0.85), 0 16px 32px -14px rgba(0, 0, 0, 0.6);
+  --focus-ring: 0 0 0 2px var(--bg), 0 0 0 3.5px rgba(var(--cyan-rgb), 0.9), 0 0 22px 2px rgba(var(--cyan-rgb), 0.35);
+
+  /* Layout */
+  --dock-h: 64px;
+}

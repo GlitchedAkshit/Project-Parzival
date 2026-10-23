@@ -1,0 +1,111 @@
+/* =========================================================================
+   Liquid glass surfaces
+   - translucent tint + controlled backdrop blur/saturation
+   - a fine hairline border that brightens towards the top (reflection)
+   - an edge light and a soft sheen that follow the pointer (--lx / --ly,
+     set from JS only on the hovered panel)
+   ========================================================================= */
+.glass {
+  position: relative;
+  isolation: isolate;
+  background: var(--glass-sheen), var(--glass-tint);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+          backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-sat));
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    inset 0 -1px 0 rgba(var(--cyan-rgb), 0.025),
+    var(--shadow-float);
+  transition:
+    box-shadow var(--dur-3) var(--ease-out),
+    border-color var(--dur-3) var(--ease-out),
+    transform var(--dur-spring) var(--ease-spring);
+}
+
+/* Inner sheen that follows the pointer */
+.glass::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  pointer-events: none;
+  background: radial-gradient(520px circle at var(--lx, 50%) var(--ly, -30%),
+      rgba(var(--cyan-rgb), 0.065), transparent 55%);
+  opacity: 0;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+
+/* Edge light: a 1px ring masked to the border, brightest near the pointer */
+.glass::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  pointer-events: none;
+  background:
+    radial-gradient(280px circle at var(--lx, 50%) var(--ly, 0%), rgba(var(--cyan-rgb), 0.5), transparent 62%),
+    linear-gradient(180deg, rgba(210, 242, 255, 0.2), rgba(210, 242, 255, 0.03) 38%, rgba(var(--cyan-rgb), 0.07));
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask-composite: exclude;
+  opacity: 0.5;
+  transition: opacity var(--dur-3) var(--ease-out);
+}
+
+.glass.is-lit::before { opacity: 1; }
+.glass.is-lit::after { opacity: 1; }
+
+/* Variants */
+.glass--bar {
+  border-radius: var(--r-md);
+}
+
+.glass--deep {
+  background: var(--glass-sheen), var(--glass-tint-deep);
+  -webkit-backdrop-filter: blur(var(--glass-blur-deep)) saturate(var(--glass-sat));
+          backdrop-filter: blur(var(--glass-blur-deep)) saturate(var(--glass-sat));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    var(--shadow-lift);
+}
+
+.glass--dock {
+  border-radius: 24px;
+}
+
+/* Lighter glass for small surfaces inside panels (cards, tiles, bubbles) */
+.glass-lite {
+  position: relative;
+  background: linear-gradient(160deg, rgba(var(--ice-rgb), 0.06), rgba(var(--ice-rgb), 0.015));
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  transition:
+    background var(--dur-2) var(--ease-out),
+    border-color var(--dur-2) var(--ease-out),
+    transform var(--dur-spring) var(--ease-spring),
+    box-shadow var(--dur-2) var(--ease-out);
+}
+
+.glass-lite.is-interactive:hover {
+  background: linear-gradient(160deg, rgba(var(--ice-rgb), 0.09), rgba(var(--ice-rgb), 0.025));
+  border-color: var(--line-2);
+  transform: translateY(-2px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 18px 30px -18px rgba(0, 0, 0, 0.7),
+              0 0 0 1px rgba(var(--cyan-rgb), 0.06);
+}
+
+/* Barely-noticeable ambient float for the big panels */
+[data-float] {
+  animation: glass-float 14s var(--ease-in-out) infinite alternate;
+}
+[data-float="2"] { animation-duration: 17s; animation-delay: -6s; }
+@keyframes glass-float {
+  from { translate: 0 0; }
+  to   { translate: 0 -4px; }
+}
+html[data-effects="reduced"] [data-float] { animation: none; }

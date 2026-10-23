@@ -1,0 +1,159 @@
+/* =========================================================================
+   Base: reset, typography, focus, scrollbars, motion preferences
+   ========================================================================= */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+html {
+  background: var(--bg);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-md);
+  line-height: 1.5;
+  font-feature-settings: "cv11", "ss01", "tnum" 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, p, ol, ul, figure { margin: 0; }
+
+/* `hidden` always wins over component display rules */
+[hidden] { display: none !important; }
+ol, ul { padding: 0; list-style: none; }
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  background: none;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled { cursor: default; }
+
+svg { display: block; flex: none; }
+
+.icon {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+::selection { background: rgba(var(--cyan-rgb), 0.28); color: #fff; }
+
+/* Focus: always visible for keyboard users, never for mouse clicks */
+:focus { outline: none; }
+:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+  border-radius: var(--r-sm);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.skip-link {
+  position: fixed;
+  left: 16px; top: -60px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--r-sm);
+  background: var(--navy-800);
+  color: var(--ice);
+  text-decoration: none;
+  transition: top var(--dur-2) var(--ease-out);
+}
+.skip-link:focus-visible { top: 16px; }
+
+/* Scrollbars: thin, cool, only visible on hover */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--ice-rgb), 0.14) transparent;
+}
+*::-webkit-scrollbar { width: 8px; height: 8px; }
+*::-webkit-scrollbar-thumb {
+  background: rgba(var(--ice-rgb), 0.12);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+*::-webkit-scrollbar-thumb:hover { background-color: rgba(var(--ice-rgb), 0.22); }
+*::-webkit-scrollbar-track { background: transparent; }
+
+.hud {
+  font-family: var(--font-hud);
+  font-stretch: 85%;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+
+kbd, .kbd {
+  display: inline-flex;
+  align-items: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 6px;
+  border: 1px solid var(--line-2);
+  background: rgba(var(--ice-rgb), 0.04);
+  color: var(--text-2);
+  font: 600 10.5px/1 var(--font-hud);
+  letter-spacing: 0.06em;
+}
+
+mark {
+  background: rgba(var(--cyan-rgb), 0.18);
+  color: var(--ice);
+  border-radius: 3px;
+  padding: 0 2px;
+}
+
+/* -------------------------------------------------------------------------
+   Reduced motion / reduced effects
+   ------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-effects="reduced"] *,
+html[data-effects="reduced"] *::before,
+html[data-effects="reduced"] *::after {
+  animation-play-state: paused !important;
+}
+html[data-effects="reduced"] {
+  --glass-blur: 14px;
+  --glass-blur-deep: 18px;
+}

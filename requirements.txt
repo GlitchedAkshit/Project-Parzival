@@ -1,0 +1,16 @@
+# Core
+sounddevice
+vosk
+pyttsx3
+requests
+numpy
+
+# Interface: glass web UI in a native window (WebView2), classic Tk fallback
+pywebview
+customtkinter
+pillow
+
+# Windows system control + voice output (SAPI via comtypes)
+pycaw
+comtypes
+pyautogui

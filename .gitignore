@@ -1,0 +1,19 @@
+# Secrets & personal data - settings.json holds your Home Assistant token
+settings.json
+frontend/memory.json
+frontend/devices.json
+frontend/tasks.json
+frontend/.webview/
+frontend/.app-window/
+frontend/logs/
+frontend/screenshots/
+HOW_IT_WORKS.md
+
+# Environment / large downloads
+venv/
+backend/models/
+__pycache__/
+*.tmp
+
+# Pre-update copy of the original source
+_original_backup/
