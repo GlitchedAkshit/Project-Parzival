@@ -348,6 +348,23 @@ def _summarize_flow(result):
     return {"status": "error", "message": f"Unexpected response from Home Assistant ({kind})."}
 
 
+def _tv_name(ip):
+    """The name you gave the TV (e.g. "BRAVIA VU31"), from its built-in
+    Chromecast's read-only device-info endpoint; falls back to reverse DNS."""
+    try:
+        import requests
+        r = requests.get(f"http://{ip}:8008/setup/eureka_info", params={"params": "name"}, timeout=1.5)
+        name = r.json().get("name")
+        if name:
+            return str(name)[:60]
+    except Exception:
+        pass
+    try:
+        return socket.gethostbyaddr(ip)[0]
+    except OSError:
+        return ""
+
+
 def discover_android_tvs(timeout=0.6):
     """Finds devices on this PC's local /24 network that accept Android TV
     Remote connections (TCP 6466) - the same check the Google TV phone app
@@ -367,11 +384,7 @@ def discover_android_tvs(timeout=0.6):
         s.settimeout(timeout)
         try:
             s.connect((ip, 6466))
-            try:
-                name = socket.gethostbyaddr(ip)[0]
-            except OSError:
-                name = ""
-            return {"host": ip, "name": name}
+            return {"host": ip, "name": _tv_name(ip)}
         except OSError:
             return None
         finally:
